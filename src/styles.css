@@ -592,7 +592,9 @@ img, video { display: block; width: 100%; }
 .admin-drawer header button { background:none; border:0; color:#fff; cursor:pointer; }
 .admin-scroll { height:calc(100vh - 64px); overflow:auto; padding:20px; }
 .admin-note,.admin-status { color:#aaa; font-size:12px; line-height:1.65; }
-.admin-status-live { position:sticky; z-index:2; top:-20px; margin:10px -20px 0; padding:10px 20px; border-top:1px solid #2d2d2d; border-bottom:1px solid #2d2d2d; background:#161616; color:#d8ff3e; }
+.admin-status-live { position:sticky; z-index:2; top:-20px; display:flex; align-items:center; justify-content:space-between; gap:12px; margin:10px -20px 0; padding:10px 20px; border-top:1px solid #2d2d2d; border-bottom:1px solid #2d2d2d; background:#161616; color:#d8ff3e; }
+.admin-status-live span { min-width:0; }
+.admin-status-live button { flex:0 0 auto; }
 .admin-drawer section { padding:18px 0; border-bottom:1px solid var(--line); }
 .admin-drawer h3 { margin:0 0 13px; font-size:14px; }
 .admin-drawer input,.admin-drawer textarea,.admin-drawer select { box-sizing:border-box; width:100%; margin:0 0 9px; padding:10px; border:1px solid #373737; border-radius:0; background:#090909; color:#fff; font:inherit; font-size:13px; }
