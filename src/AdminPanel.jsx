@@ -40,6 +40,7 @@ export default function AdminPanel({ content, onContentChange }) {
   }, [content.profile]);
 
   function saveConfig() {
+    if (!config.secretId.trim() || !config.secretKey.trim()) return setStatus("请完整填写 SecretId 和 SecretKey。");
     saveCosConfig(config);
     setStatus("COS 授权已仅保存到当前浏览器。现在可以上传并同步。");
   }
@@ -76,6 +77,11 @@ export default function AdminPanel({ content, onContentChange }) {
       setStatus("关于我与联系方式已同步，访客刷新后即可看到。");
     } catch (error) { setStatus(error.message); }
   }
+  async function saveAll() {
+    if (!config.secretId.trim() || !config.secretKey.trim()) return setStatus("请完整填写 SecretId 和 SecretKey 后再保存全部修改。");
+    saveCosConfig(config);
+    await saveProfile();
+  }
   async function removeGalleryAsset(asset) {
     if (!window.confirm(`确认从网站移除「${asset.label}」吗？`)) return;
     try {
@@ -110,7 +116,7 @@ export default function AdminPanel({ content, onContentChange }) {
   if (!open) return <button className="admin-entry" type="button" onClick={() => setOpen(true)} aria-label="打开内容管理"><GearSix size={20} /></button>;
   return <aside className="admin-drawer" aria-label="内容管理"><header><strong>内容管理</strong><button type="button" onClick={() => setOpen(false)}><X size={20} /></button></header><div className="admin-scroll">
     <p className="admin-note">桶：yk-9527-1454067391（广州）。视频、图片和内容清单都会自动同步到 COS，访客刷新后即可看到。</p>
-    <p className="admin-status admin-status-live">{status || (isCosConfigured() ? "COS 已配置，可以保存修改。" : "请先填写并保存 COS 授权。")}</p>
+    <div className="admin-status admin-status-live"><span>{status || (isCosConfigured() ? "COS 已配置，可以保存修改。" : "请先填写并保存 COS 授权。")}</span><button type="button" onClick={saveAll}>保存全部修改</button></div>
     <section><h3>腾讯云 COS 授权</h3><input placeholder="SecretId（建议使用仅限此桶写入的子账号）" value={config.secretId} onChange={(e) => setConfig({ ...config, secretId: e.target.value })}/><input type="password" placeholder="SecretKey" value={config.secretKey} onChange={(e) => setConfig({ ...config, secretKey: e.target.value })}/><button type="button" onClick={saveConfig}>保存授权</button><p className="admin-note">密钥仅保存在当前浏览器，不会提交到 GitHub。</p></section>
     <section><h3>首页、关于我与联系方式</h3><label>首页姓名<input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="例如：杨坤" /></label><label>首页职业描述<input value={heroRole} onChange={(e) => setHeroRole(e.target.value)} placeholder="例如：剪辑师 / AI设计师 / AI漫剧" /></label><label>第一段个人介绍<textarea value={aboutPrimary} onChange={(e) => setAboutPrimary(e.target.value)} /></label><label>第二段个人介绍<textarea value={aboutSecondary} onChange={(e) => setAboutSecondary(e.target.value)} /></label><label>经历数字<input value={experienceValue} onChange={(e) => setExperienceValue(e.target.value)} placeholder="例如：2+" /></label><label>经历单位<input value={experienceUnit} onChange={(e) => setExperienceUnit(e.target.value)} placeholder="例如：年" /></label><label>代表项目数字<input value={projectValue} onChange={(e) => setProjectValue(e.target.value)} placeholder="例如：8" /></label><label>代表项目单位<input value={projectUnit} onChange={(e) => setProjectUnit(e.target.value)} placeholder="例如：部+" /></label><label>公司名称<input value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="例如：河南荧灿文化发展" /></label><label>任职时间<input value={companyPeriod} onChange={(e) => setCompanyPeriod(e.target.value)} placeholder="例如：2024—2026" /></label><label>手机号<input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="例如：166 2511 6217" /></label><label>邮箱<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="例如：name@example.com" /></label><label>页脚版权文字<input value={footerCopyright} onChange={(e) => setFooterCopyright(e.target.value)} placeholder="例如：© 2024—2026 杨坤 · 保留所有权利" /></label><button type="button" onClick={saveProfile}>保存首页、关于我与联系方式</button></section>
     <section><h3>页面背景与素材</h3><label>首页背景视频<input type="file" accept="video/*" data-field="heroVideo" onChange={uploadSiteMedia}/></label><label>首页背景图<input type="file" accept="image/*" data-field="heroPoster" onChange={uploadSiteMedia}/></label><label>关于页图片<input type="file" accept="image/*" data-field="portrait" onChange={uploadSiteMedia}/></label><label>联系页背景<input type="file" accept="image/*" data-field="contactBackground" onChange={uploadSiteMedia}/></label></section>
