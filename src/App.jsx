@@ -124,7 +124,7 @@ export function App() {
             <ParticleText
               id="hero-title"
               className="hero-title-particles"
-              text={content.profile?.displayName || "李万民"}
+              text={content.profile?.displayName === "李万民" ? "杨坤" : (content.profile?.displayName || "杨坤")}
               particleSize={2}
               density={4}
               color="#ffffff"
@@ -154,13 +154,13 @@ export function App() {
 
       <section className="about" id="about">
         <div className="about-image" data-reveal>
-          <img src={content.siteMedia.portrait || cosAsset("portrait-editor-bw.png")} data-fallback-src={localAsset("portrait-editor-bw.png")} onError={useLocalAssetFallback} alt="李万民在剪辑工作室工作的黑白人物照" />
+          <img src={content.siteMedia.portrait || cosAsset("portrait-editor-bw.png")} data-fallback-src={localAsset("portrait-editor-bw.png")} onError={useLocalAssetFallback} alt="杨坤在剪辑工作室工作的黑白人物照" />
         </div>
         <div className="about-copy">
           <BlurText as="p" text="ABOUT" delay={100} className="eyebrow" />
           <BlurText as="h2" text={"用影像讲好故事，\n用 AI 拓展想象的边界。"} delay={120} />
           <BlurText
-            text={content.profile?.aboutPrimary || "我叫李万民，是一名专注内容叙事与视觉表达的 AI 短剧剪辑师。熟悉真人短剧的粗剪、精剪与节奏把控，也能独立完成 AI 漫剧从小说改写、剧本分镜、资产图建立、视频生成到剪辑成片的完整流程。"}
+            text={(content.profile?.aboutPrimary || "我叫杨坤，是一名专注内容叙事与视觉表达的 AI 短剧剪辑师。熟悉真人短剧的粗剪、精剪与节奏把控，也能独立完成 AI 漫剧从小说改写、剧本分镜、资产图建立、视频生成到剪辑成片的完整流程。").replaceAll("李万民", "杨坤")}
             delay={32}
           />
           <BlurText
@@ -304,7 +304,7 @@ export function App() {
           </div>
         </div>
         <footer className="footer page-shell">
-          <BlurText as="span" text={content.profile?.footerCopyright || "© 2024—2026 李万民 · 保留所有权利"} delay={35} />
+          <BlurText as="span" text={(content.profile?.footerCopyright || "© 2024—2026 杨坤 · 保留所有权利").replaceAll("李万民", "杨坤")} delay={35} />
           <BlurText as="span" text="AI EDITOR · AVAILABLE FOR WORK" delay={45} />
           <a href="#home" aria-label="返回顶部"><ArrowUp size={16} /> TOP</a>
         </footer>
@@ -348,3 +348,4 @@ export function App() {
     </main>
   );
 }
+
