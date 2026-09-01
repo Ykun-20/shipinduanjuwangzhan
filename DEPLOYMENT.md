@@ -2,7 +2,7 @@
 
 每次推送 `main` 分支，GitHub Actions 会自动构建并发布网站到 GitHub Pages。首次使用时，请在仓库 **Settings → Pages → Build and deployment** 中将 Source 设为 **GitHub Actions**。
 
-网站地址为：`https://xuanhuanai.github.io/shipinduanjuwangzhan/`
+网站地址为：`https://ykun-20.github.io/shipinduanjuwangzhan/`
 
 ## 上传视频
 
@@ -15,8 +15,9 @@
 
 ## COS CORS
 
-在 COS 控制台为桶 `liwanmin-0115-1454067572` 添加 CORS 规则：
+在 COS 控制台为桶 `yk-9527-1454067391` 添加 CORS 规则：
 
-- Origin：`https://xuanhuanai.github.io`
+- Origin：`https://ykun-20.github.io`
 - Methods：`GET, PUT, HEAD, POST`
 - Allowed Headers：`*`
+

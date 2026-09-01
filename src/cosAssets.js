@@ -1,6 +1,6 @@
 import COS from "cos-js-sdk-v5";
 
-export const COS_BUCKET = "liwanmin-0115-1454067572";
+export const COS_BUCKET = "yk-9527-1454067391";
 export const COS_REGION = "ap-guangzhou";
 export const COS_PUBLIC_BASE_URL = `https://${COS_BUCKET}.cos.${COS_REGION}.myqcloud.com`;
 export const CONTENT_MANIFEST_KEY = "site/liwanmin-portfolio.json";
@@ -81,3 +81,4 @@ export function useLocalAssetFallback(event) {
   event.currentTarget.dataset.usingLocalFallback = "true";
   event.currentTarget.src = fallbackUrl;
 }
+
