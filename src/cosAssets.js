@@ -23,8 +23,16 @@ export function loadCosConfig() {
   try { return JSON.parse(localStorage.getItem(CONFIG_STORAGE_KEY) || "null"); } catch { return null; }
 }
 
+function cleanCredential(value) {
+  return String(value || "").replace(/[\s\u200B-\u200D\uFEFF]/g, "");
+}
+
 export function saveCosConfig(config) {
-  localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify({ secretId: config.secretId.trim(), secretKey: config.secretKey.trim() }));
+  const secretId = cleanCredential(config.secretId);
+  const secretKey = cleanCredential(config.secretKey);
+  if (!/^AKID[A-Za-z0-9]{20,}$/.test(secretId)) throw new Error("SecretId 格式无效：应以 AKID 开头。请从子账号的 API 密钥页面重新复制。");
+  if (secretKey.length < 20) throw new Error("SecretKey 格式无效或内容不完整，请重新复制与该 SecretId 配套的密钥。");
+  localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify({ secretId, secretKey }));
 }
 
 export function isCosConfigured() {

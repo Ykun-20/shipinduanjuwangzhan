@@ -41,8 +41,10 @@ export default function AdminPanel({ content, onContentChange }) {
 
   function saveConfig() {
     if (!config.secretId.trim() || !config.secretKey.trim()) return setStatus("请完整填写 SecretId 和 SecretKey。");
-    saveCosConfig(config);
-    setStatus("COS 授权已仅保存到当前浏览器。现在可以上传并同步。");
+    try {
+      saveCosConfig(config);
+      setStatus("COS 授权格式校验通过，已保存到当前浏览器。现在可以上传并同步。");
+    } catch (error) { setStatus(error.message); }
   }
   async function uploadGallery(event) {
     const file = event.target.files?.[0];
@@ -79,8 +81,10 @@ export default function AdminPanel({ content, onContentChange }) {
   }
   async function saveAll() {
     if (!config.secretId.trim() || !config.secretKey.trim()) return setStatus("请完整填写 SecretId 和 SecretKey 后再保存全部修改。");
-    saveCosConfig(config);
-    await saveProfile();
+    try {
+      saveCosConfig(config);
+      await saveProfile();
+    } catch (error) { setStatus(error.message); }
   }
   async function removeGalleryAsset(asset) {
     if (!window.confirm(`确认从网站移除「${asset.label}」吗？`)) return;
