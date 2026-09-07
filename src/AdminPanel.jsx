@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { CloudArrowUp, GearSix, PencilSimple, Plus, Trash, X } from "@phosphor-icons/react";
 import { isCosConfigured, loadCosConfig, saveCosConfig, syncManifest, uploadContentFile } from "./cosAssets";
 
+import { getCategories, updateCategories } from "./categories";
+import CategoryEditor from "./CategoryEditor";
+
 export default function AdminPanel({ content, onContentChange }) {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState("");
@@ -39,6 +42,21 @@ export default function AdminPanel({ content, onContentChange }) {
     setFooterCopyright((profile.footerCopyright || "© 2024—2026 杨坤 · 保留所有权利").replaceAll("李万民", "杨坤"));
   }, [content.profile]);
 
+  const galleryCategories = getCategories(content, "gallery");
+  const projectCategories = getCategories(content, "project");
+  useEffect(() => {
+    if (!galleryCategories.some((item) => item.id === galleryCategory)) setGalleryCategory(galleryCategories[0]?.id || "");
+  }, [content, galleryCategory]);
+  async function saveCategories(kind, categories, removedId, destination) {
+    try {
+      setStatus("正在同步分类…");
+      const next = updateCategories(content, kind, categories, removedId, destination);
+      await syncManifest(next);
+      onContentChange(next);
+      setStatus("分类已保存并同步。");
+      return true;
+    } catch (error) { setStatus(error.message); return false; }
+  }
   function saveConfig() {
     if (!config.secretId.trim() || !config.secretKey.trim()) return setStatus("请完整填写 SecretId 和 SecretKey。");
     try {
@@ -49,6 +67,7 @@ export default function AdminPanel({ content, onContentChange }) {
   async function uploadGallery(event) {
     const file = event.target.files?.[0];
     if (!file) return;
+    if (!galleryCategories.length) return setStatus("请先添加图片分类。");
     try {
       setStatus("正在上传图片并同步内容…");
       const url = await uploadContentFile(file, "content/gallery");
@@ -99,9 +118,10 @@ export default function AdminPanel({ content, onContentChange }) {
   async function editGalleryAsset(asset) {
     const label = window.prompt("修改图片名称", asset.label || "");
     if (label === null) return;
-    const category = window.prompt("修改归类：characters（人物）或 scenes（场景）", asset.category || "characters");
+    const categoryName = window.prompt("修改归类，可选：" + galleryCategories.map((item) => item.title).join("、"), galleryCategories.find((item) => item.id === (asset.category || "characters"))?.title);
+    const category = categoryName === null ? null : galleryCategories.find((item) => item.title === categoryName.trim())?.id || "";
     if (category === null) return;
-    if (!label.trim() || !["characters", "scenes"].includes(category.trim())) return setStatus("图片名称不能为空，归类只能填写 characters 或 scenes。");
+    if (!label.trim() || !galleryCategories.some((item) => item.id === category)) return setStatus("图片名称不能为空，请选择已有的图片分类名称。");
     try {
       setStatus("正在保存图片修改…");
       const next = { ...content, galleryAssets: content.galleryAssets.map((item) => item.id === asset.id ? { ...item, label: label.trim(), alt: label.trim(), category: category.trim() } : item) };
@@ -111,14 +131,15 @@ export default function AdminPanel({ content, onContentChange }) {
     } catch (error) { setStatus(error.message); }
   }
   async function addProject(event) {
-    event.preventDefault(); const form = new FormData(event.currentTarget); const cover = form.get("cover"); const video = form.get("video");
+    event.preventDefault(); const formElement = event.currentTarget; const form = new FormData(formElement); const cover = form.get("cover"); const video = form.get("video");
+    if (!projectCategories.length) return setStatus("请先添加项目分类。");
     if (!(cover instanceof File) || !cover.size) return setStatus("请为项目选择背景图片。");
     try {
       setStatus("正在上传项目素材并同步…");
       const coverUrl = await uploadContentFile(cover, "content/projects");
       const videoUrl = video instanceof File && video.size ? await uploadContentFile(video, "content/videos") : "";
       const next = { ...content, projects: [...content.projects, { id: crypto.randomUUID(), category: form.get("projectCategory"), title: form.get("projectTitle"), type: form.get("projectType"), description: form.get("projectDescription"), coverUrl, videoUrl }] };
-      await syncManifest(next); onContentChange(next); event.currentTarget.reset(); setStatus("项目已添加并同步到 COS。");
+      await syncManifest(next); onContentChange(next); formElement.reset(); setStatus("项目已添加并同步到 COS。");
     } catch (error) { setStatus(error.message); }
   }
   async function removeProject(project) {
@@ -154,10 +175,10 @@ export default function AdminPanel({ content, onContentChange }) {
     <section><h3>腾讯云 COS 授权</h3><input placeholder="SecretId（建议使用仅限此桶写入的子账号）" value={config.secretId} onChange={(e) => setConfig({ ...config, secretId: e.target.value })}/><input type="password" placeholder="SecretKey" value={config.secretKey} onChange={(e) => setConfig({ ...config, secretKey: e.target.value })}/><button type="button" onClick={saveConfig}>保存授权</button><p className="admin-note">密钥仅保存在当前浏览器，不会提交到 GitHub。</p></section>
     <section><h3>首页、关于我与联系方式</h3><label>首页姓名<input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="例如：杨坤" /></label><label>首页职业描述<input value={heroRole} onChange={(e) => setHeroRole(e.target.value)} placeholder="例如：剪辑师 / AI设计师 / AI漫剧" /></label><label>第一段个人介绍<textarea value={aboutPrimary} onChange={(e) => setAboutPrimary(e.target.value)} /></label><label>第二段个人介绍<textarea value={aboutSecondary} onChange={(e) => setAboutSecondary(e.target.value)} /></label><label>经历数字<input value={experienceValue} onChange={(e) => setExperienceValue(e.target.value)} placeholder="例如：2+" /></label><label>经历单位<input value={experienceUnit} onChange={(e) => setExperienceUnit(e.target.value)} placeholder="例如：年" /></label><label>代表项目数字<input value={projectValue} onChange={(e) => setProjectValue(e.target.value)} placeholder="例如：8" /></label><label>代表项目单位<input value={projectUnit} onChange={(e) => setProjectUnit(e.target.value)} placeholder="例如：部+" /></label><label>公司名称<input value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="例如：河南荧灿文化发展" /></label><label>任职时间<input value={companyPeriod} onChange={(e) => setCompanyPeriod(e.target.value)} placeholder="例如：2024—2026" /></label><label>手机号<input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="例如：166 2511 6217" /></label><label>邮箱<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="例如：name@example.com" /></label><label>页脚版权文字<input value={footerCopyright} onChange={(e) => setFooterCopyright(e.target.value)} placeholder="例如：© 2024—2026 杨坤 · 保留所有权利" /></label><button type="button" onClick={saveProfile}>保存首页、关于我与联系方式</button></section>
     <section><h3>页面背景与素材</h3><label>首页背景视频<input type="file" accept="video/*" data-field="heroVideo" onChange={uploadSiteMedia}/></label><label>首页背景图<input type="file" accept="image/*" data-field="heroPoster" onChange={uploadSiteMedia}/></label><label>关于页图片<input type="file" accept="image/*" data-field="portrait" onChange={uploadSiteMedia}/></label><label>联系页背景<input type="file" accept="image/*" data-field="contactBackground" onChange={uploadSiteMedia}/></label></section>
-    <section><h3>添加图片资产</h3><label>图片归类<select value={galleryCategory} onChange={(e) => setGalleryCategory(e.target.value)}><option value="characters">人物资产图</option><option value="scenes">场景资产图</option></select></label><input placeholder="图片名称" value={title} onChange={(e) => setTitle(e.target.value)}/><label className="upload-label"><CloudArrowUp size={18}/>选择图片<input type="file" accept="image/*" onChange={uploadGallery}/></label></section>
-    {content.galleryAssets.length > 0 && <section><h3>已发布图片资产</h3><div className="admin-project-list">{content.galleryAssets.map((asset) => <div key={asset.id} className="admin-project-row"><span><strong>{asset.label}</strong><small>{asset.category === "scenes" ? "场景资产图" : "人物资产图"}</small></span><div className="admin-row-actions"><button type="button" onClick={() => editGalleryAsset(asset)} aria-label={`修改${asset.label}`}><PencilSimple size={16}/>修改</button><button type="button" className="admin-delete" onClick={() => removeGalleryAsset(asset)} aria-label={`删除${asset.label}`}><Trash size={16}/>删除</button></div></div>)}</div></section>}
-    <section><h3>添加项目</h3><form onSubmit={addProject}><label>项目归类<select name="projectCategory" defaultValue="shortDrama"><option value="shortDrama">短剧</option><option value="otherWorks">其他板块</option></select></label><input name="projectTitle" required placeholder="项目名称"/><input name="projectType" required placeholder="项目类型，例如 AI 漫剧"/><textarea name="projectDescription" placeholder="项目简介"/><label>项目背景图片<input name="cover" type="file" accept="image/*" required/></label><label>项目视频（访客可点击播放）<input name="video" type="file" accept="video/*"/></label><button type="submit"><Plus size={16}/>添加并同步</button></form></section>
-    {content.projects.length > 0 && <section><h3>已发布项目</h3><div className="admin-project-list">{content.projects.map((project) => <div key={project.id} className="admin-project-row"><span><strong>{project.title}</strong><small>{project.category === "otherWorks" ? "其他板块" : "短剧"} · {project.type}</small></span><div className="admin-row-actions"><button type="button" onClick={() => editProject(project)} aria-label={`修改${project.title}`}><PencilSimple size={16}/>修改</button><button type="button" className="admin-delete" onClick={() => removeProject(project)} aria-label={`删除${project.title}`}><Trash size={16}/>删除</button></div></div>)}</div></section>}
+    <CategoryEditor kind="gallery" title="图片分类管理" categories={galleryCategories} onSave={saveCategories}/><section><h3>添加图片资产</h3><label>图片归类<select value={galleryCategory} onChange={(e) => setGalleryCategory(e.target.value)}>{galleryCategories.map((item) => <option key={item.id} value={item.id}>{item.title}</option>)}</select></label><input placeholder="图片名称" value={title} onChange={(e) => setTitle(e.target.value)}/><label className="upload-label"><CloudArrowUp size={18}/>选择图片<input type="file" accept="image/*" onChange={uploadGallery}/></label></section>
+    {content.galleryAssets.length > 0 && <section><h3>已发布图片资产</h3><div className="admin-project-list">{content.galleryAssets.map((asset) => <div key={asset.id} className="admin-project-row"><span><strong>{asset.label}</strong><small>{galleryCategories.find((item) => item.id === (asset.category || "characters"))?.title}</small></span><div className="admin-row-actions"><button type="button" onClick={() => editGalleryAsset(asset)} aria-label={`修改${asset.label}`}><PencilSimple size={16}/>修改</button><button type="button" className="admin-delete" onClick={() => removeGalleryAsset(asset)} aria-label={`删除${asset.label}`}><Trash size={16}/>删除</button></div></div>)}</div></section>}
+    <CategoryEditor kind="project" title="项目分类管理" categories={projectCategories} onSave={saveCategories}/><section><h3>添加项目</h3><form onSubmit={addProject}><label>项目归类<select name="projectCategory" defaultValue={projectCategories[0]?.id}>{projectCategories.map((item) => <option key={item.id} value={item.id}>{item.title}</option>)}</select></label><input name="projectTitle" required placeholder="项目名称"/><input name="projectType" required placeholder="项目类型，例如 AI 漫剧"/><textarea name="projectDescription" placeholder="项目简介"/><label>项目背景图片<input name="cover" type="file" accept="image/*" required/></label><label>项目视频（访客可点击播放）<input name="video" type="file" accept="video/*"/></label><button type="submit"><Plus size={16}/>添加并同步</button></form></section>
+    {content.projects.length > 0 && <section><h3>已发布项目</h3><div className="admin-project-list">{content.projects.map((project) => <div key={project.id} className="admin-project-row"><span><strong>{project.title}</strong><small>{projectCategories.find((item) => item.id === (project.category || "shortDrama"))?.title} · {project.type}</small></span><div className="admin-row-actions"><button type="button" onClick={() => editProject(project)} aria-label={`修改${project.title}`}><PencilSimple size={16}/>修改</button><button type="button" className="admin-delete" onClick={() => removeProject(project)} aria-label={`删除${project.title}`}><Trash size={16}/>删除</button></div></div>)}</div></section>}
     <p className="admin-status">{status || (isCosConfigured() ? "COS 已配置，可以上传。" : "请先保存 COS 授权后再上传。")}</p>
   </div></aside>;
 }

@@ -14,3 +14,5 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - Preserve the quiet black-box cinema/gallery direction: matte black surfaces, oversized Chinese typography, full-bleed cinematic imagery, near-invisible UI chrome, hairline dividers, and a single acid-lime playback accent.
 - Keep the page image-led and restrained. Avoid template-like card grids, decorative gradients, glassmorphism, neon cyberpunk styling, and excessive rounded corners.
 - The intended surface is desktop-first React + Vite with a maximum content width of 1700px.
+
+- 图片分类与项目分类必须支持改名、添加、删除，并与前台及 COS 内容清单同步。删除分类需保留已有内容并迁移到用户选择的其他分类。图片资产缩略图必须无需点击即可显示。
