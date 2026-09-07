@@ -13,6 +13,7 @@ import BlurText from "./components/BlurText";
 import ParticleText from "./components/ParticleText";
 import { cosAsset, loadManifest, localAsset, useLocalAssetFallback } from "./cosAssets";
 import AdminPanel from "./AdminPanel";
+import ProjectRail from "./ProjectRail";
 import { getCategories } from "./categories";
 
 const strengths = [
@@ -188,12 +189,8 @@ export function App() {
             <BlurText as="h2" text="精选项目" delay={150} />
           </div>
         </div>
-        <div className="project-categories page-shell">
-          {getCategories(content, "project").map(({ id: category, title, label }, index) => {
-            const number = String(index + 1).padStart(2, "0");
-            const projects = content.projects.filter((project) => (project.category || "shortDrama") === category);
-            return <button className="project-category-card project-category-button" type="button" key={category} data-reveal onClick={() => setActiveCategory({ title, label, projects })}><div className="project-category-topline"><span>{number}</span><i aria-hidden="true" /></div><div className="project-category-title"><BlurText as="small" text={label} delay={80} /><BlurText as="h3" text={title} delay={120} /></div><span className="project-category-enter">查看 {projects.length ? `${projects.length} 个项目` : "项目"} →</span></button>;
-          })}
+        <div className="project-rails page-shell">
+          {getCategories(content, "project").map((category) => <ProjectRail key={category.id} category={category} projects={content.projects.filter((project) => (project.category || "shortDrama") === category.id)} onOpen={setActiveCategory}/>)}
         </div>
       </section>
 
