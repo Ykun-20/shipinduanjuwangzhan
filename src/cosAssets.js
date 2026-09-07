@@ -89,3 +89,4 @@ export function useLocalAssetFallback(event) {
   event.currentTarget.dataset.usingLocalFallback = "true";
   event.currentTarget.src = fallbackUrl;
 }
+
