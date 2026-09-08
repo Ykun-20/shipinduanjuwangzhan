@@ -778,3 +778,14 @@ img, video { display: block; width: 100%; }
 .wechat-panel header button { background: transparent; border: 0; color: white; cursor: pointer; padding: 6px; }
 .wechat-panel img { display: block; width: 100%; max-height: 70dvh; object-fit: contain; background: white; }
 .wechat-panel p { margin: 12px 0 0; color: #aaa; font-size: 12px; text-align: center; }
+
+.site-header { position: fixed; font-size: 17px; background: rgba(8,8,8,.96); }
+.site-header .nav a { font-size: 18px; font-weight: 550; }
+.header-contact { background: transparent; color: var(--text); font: inherit; cursor: pointer; }
+section[id] { scroll-margin-top: 108px; }
+.contact-info-panel { padding: 24px; }
+.contact-info-row { display: grid; gap: 12px; padding: 20px 0; border-top: 1px solid #333; }
+.contact-info-row small { color: #999; font-size: 13px; }
+.contact-info-row a { font-size: 22px; overflow-wrap: anywhere; color: white; }
+.contact-info-row a:hover { color: var(--accent); }
+@media(max-width: 700px) { .site-header { grid-template-columns: 1fr auto auto; gap: 14px; } .site-header .header-contact { display: inline-flex; padding: 0 12px; gap: 8px; font-size: 14px; } .chapter-mark { font-size: 13px; } section[id] { scroll-margin-top: 88px; } }
