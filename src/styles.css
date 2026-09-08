@@ -789,3 +789,9 @@ section[id] { scroll-margin-top: 108px; }
 .contact-info-row a { font-size: 22px; overflow-wrap: anywhere; color: white; }
 .contact-info-row a:hover { color: var(--accent); }
 @media(max-width: 700px) { .site-header { grid-template-columns: 1fr auto auto; gap: 14px; } .site-header .header-contact { display: inline-flex; padding: 0 12px; gap: 8px; font-size: 14px; } .chapter-mark { font-size: 13px; } section[id] { scroll-margin-top: 88px; } }
+
+/* About portrait keeps its intrinsic proportions instead of filling a cropped panel. */
+.about { width: min(1700px, 100%); margin-inline: auto; min-height: 0; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; }
+.about .about-image { min-height: 0; height: auto; align-self: center; }
+.about .about-image img { display: block; width: 100%; height: auto; object-fit: contain; object-position: center; }
+@media(max-width: 1100px) { .about { grid-template-columns: minmax(0, 1fr); } .about .about-image { width: min(600px, 100%); margin-inline: auto; } }
