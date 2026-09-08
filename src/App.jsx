@@ -37,6 +37,7 @@ const galleryAssets = [
 
 export function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [wechatOpen, setWechatOpen] = useState(false);
   const [activeAsset, setActiveAsset] = useState(null);
   const [activeCategory, setActiveCategory] = useState(null);
   const [content, setContent] = useState({ galleryAssets, projects: [], siteMedia: {}, profile: {} });
@@ -63,6 +64,7 @@ export function App() {
         setActiveAsset(null);
         setActiveCategory(null);
         setMenuOpen(false);
+        setWechatOpen(false);
       }
     };
     window.addEventListener("keydown", close);
@@ -70,7 +72,7 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    if (!activeAsset && !activeCategory) return undefined;
+    if (!activeAsset && !activeCategory && !wechatOpen) return undefined;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
@@ -293,9 +295,9 @@ export function App() {
             gradient
           />
           <div className="contact-actions">
-            <a href={`mailto:${content.profile?.email || "13673958331@163.com"}?subject=作品合作咨询`}>
+            <button type="button" className="wechat-contact-trigger" onClick={() => setWechatOpen(true)}>
               <BlurText as="span" text="联系我，聊聊你的项目" delay={55} /> <ArrowRight size={21} />
-            </a>
+            </button>
             <a href={`tel:${(content.profile?.phone || "166 2511 6217").replace(/\s+/g, "")}`}><BlurText as="span" text={content.profile?.phone || "166 2511 6217"} delay={55} /></a>
           </div>
         </div>
@@ -341,6 +343,7 @@ export function App() {
           </section>
         </div>
       )}
+      {wechatOpen && <div className="wechat-dialog" role="dialog" aria-modal="true" aria-labelledby="wechat-title"><button className="wechat-backdrop" type="button" aria-label="关闭微信二维码" onClick={() => setWechatOpen(false)}/><section className="wechat-panel"><header><h2 id="wechat-title">微信联系我</h2><button autoFocus type="button" aria-label="关闭" onClick={() => setWechatOpen(false)}><X size={22}/></button></header><img src={localAsset("wechat-contact.jpg")} alt="我的微信二维码，使用微信扫一扫添加好友"/><p>微信扫一扫，或长按保存图片后在微信中识别</p></section></div>}
       <AdminPanel content={content} onContentChange={setContent} />
     </main>
   );

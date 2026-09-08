@@ -767,3 +767,14 @@ img, video { display: block; width: 100%; }
 .focused-player p { color: #aaa; font-size: 13px; }
 .project-back { margin-top: 14px; padding: 8px 12px; border: 1px solid #444; color: #ddd; background: transparent; cursor: pointer; }
 @media(max-width: 700px) { .gallery-groups .gallery-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; } .gallery-groups .gallery-item img { height: 240px; } .project-browser-grid { grid-template-columns: minmax(0,1fr); } .project-view { padding: 12px; } .project-view-panel { padding: 16px; } }
+
+.contact-actions .wechat-contact-trigger { display: flex; align-items: center; justify-content: space-between; gap: 40px; border: 1px solid #aaa; padding: 20px 24px; min-width: min(340px, 100%); background: transparent; color: white; font: inherit; cursor: pointer; }
+.wechat-contact-trigger svg { color: var(--accent); }
+.wechat-dialog { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; }
+.wechat-backdrop { position: absolute; inset: 0; background: #000c; border: 0; cursor: pointer; }
+.wechat-panel { position: relative; background: #111; border: 1px solid #444; padding: 18px; width: min(420px, 100%); max-height: 94dvh; overflow: auto; }
+.wechat-panel header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.wechat-panel h2 { margin: 0; font-size: 20px; }
+.wechat-panel header button { background: transparent; border: 0; color: white; cursor: pointer; padding: 6px; }
+.wechat-panel img { display: block; width: 100%; max-height: 70dvh; object-fit: contain; background: white; }
+.wechat-panel p { margin: 12px 0 0; color: #aaa; font-size: 12px; text-align: center; }
