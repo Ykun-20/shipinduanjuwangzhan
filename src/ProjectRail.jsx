@@ -27,9 +27,23 @@ export default function ProjectRail({ category, projects, onOpen }) {
       onPointerMove={(event) => { if (!drag.current) return; const delta = event.clientX - drag.current.x; if (Math.abs(delta) > 6) { moved.current = true; rail.current.setPointerCapture(event.pointerId); } if (moved.current) rail.current.scrollLeft = drag.current.scroll - delta; }}
       onPointerUp={endDrag} onPointerCancel={endDrag} onPointerLeave={(event) => { if (!moved.current) endDrag(event); }}
       onClickCapture={(event) => { if (moved.current) { event.preventDefault(); event.stopPropagation(); moved.current = false; } }}>
-      {projects.map((project) => <button type="button" className="project-cover" key={project.id} aria-label={`查看作品：${project.title}`} onClick={() => onOpen({ title: project.title, label: category.title, projects: [project] })}><img src={project.coverUrl} alt={`${project.title}封面`} loading="lazy" draggable={false}/><span className="project-cover-shade"/><span className="project-cover-copy"><small>{project.type}</small><strong>{project.title}</strong></span>{project.videoUrl && <Play className="project-cover-play" size={30} weight="fill"/>}</button>)}
+      {projects.map((project) => <ProjectCover key={project.id} project={project} onOpen={() => onOpen({ title: project.title, label: category.title, projects: [project], single: true })}/>)}
       {!projects.length && <p className="project-rail-empty">作品即将上线</p>}
     </div>
     {(!edges.start || !edges.end) && <p className="project-rail-hint">按住拖动，左右浏览</p>}
   </section>;
+}
+
+function ProjectCover({ project, onOpen }) {
+  const [preview, setPreview] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  function stop() { setPreview(false); setPlaying(false); }
+  return <button type="button" className="project-cover" aria-label={`查看作品：${project.title}`}
+    onMouseEnter={() => { if (project.videoUrl) setPreview(true); }} onMouseLeave={stop}
+    onBlur={stop} onClick={() => { stop(); onOpen(); }}>
+    <img src={project.coverUrl} alt={`${project.title}封面`} loading="lazy" draggable={false}/>
+    {preview && <video className={`project-hover-video${playing ? " is-playing" : ""}`} src={project.videoUrl} autoPlay muted loop playsInline preload="none" onPlaying={() => setPlaying(true)} onError={stop} aria-hidden="true"/>}
+    <span className="project-cover-shade"/><span className="project-cover-copy"><small>{project.type}</small><strong>{project.title}</strong></span>
+    {project.videoUrl && !playing && <Play className="project-cover-play" size={30} weight="fill"/>}
+  </button>;
 }

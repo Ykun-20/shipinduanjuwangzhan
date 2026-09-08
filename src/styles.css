@@ -732,3 +732,8 @@ img, video { display: block; width: 100%; }
 .project-rail:focus-visible, .project-cover:focus-visible, .project-more:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 @media(max-width: 700px) { .project-cover { flex-basis: 72%; } .project-rail-title { gap: 14px; } .project-rail-arrows { gap: 0; } .project-rail-heading { gap: 8px; } .project-more { padding: 7px 9px; font-size: 12px; } .project-rails { gap: 36px; } }
 @media(prefers-reduced-motion: reduce) { .project-cover img { transition: none; } }
+
+.project-hover-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; opacity: 0; pointer-events: none; }
+.project-hover-video.is-playing { opacity: 1; }
+.project-view-single { grid-template-columns: minmax(0,1fr); }
+.project-view-single video { max-height: 70vh; object-fit: contain; margin: 0; }
