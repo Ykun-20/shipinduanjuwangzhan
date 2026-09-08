@@ -76,7 +76,8 @@ export async function syncManifest(content) {
 }
 
 export async function loadManifest() {
-  const response = await fetch(`${cosUrl(CONTENT_MANIFEST_KEY)}?v=${Date.now()}`);
+  const manifestUrl = import.meta.env.DEV ? `/cos-preview/${CONTENT_MANIFEST_KEY}` : cosUrl(CONTENT_MANIFEST_KEY);
+  const response = await fetch(`${manifestUrl}?v=${Date.now()}`);
   if (response.status === 404) return null;
   if (!response.ok) throw new Error(`读取 COS 内容清单失败（HTTP ${response.status}）`);
   return response.json();

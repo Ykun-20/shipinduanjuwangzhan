@@ -11,6 +11,13 @@ export default defineConfig({
   },
   server: {
     host: "0.0.0.0",
+    proxy: {
+      "/cos-preview": {
+        target: "https://yk-9527-1454067391.cos.ap-guangzhou.myqcloud.com",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/cos-preview/, ""),
+      },
+    },
     allowedHosts: ["terminal.local"],
     warmup: {
       clientFiles: ["./src/main.jsx"],

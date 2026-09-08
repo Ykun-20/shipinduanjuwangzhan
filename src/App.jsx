@@ -334,9 +334,10 @@ export function App() {
       {activeCategory && (
         <div className="project-view" role="dialog" aria-modal="true" aria-labelledby="project-view-title">
           <button className="project-view-backdrop" type="button" onClick={() => setActiveCategory(null)} aria-label="关闭项目列表" />
-          <section className="project-view-panel">
+          <section className={`project-view-panel${activeCategory.single ? " focused-player-panel" : ""}`}>
             <header><div><small>{activeCategory.label}</small><h2 id="project-view-title">{activeCategory.title}</h2></div><button type="button" onClick={() => setActiveCategory(null)} aria-label="关闭"><X size={22} /></button></header>
-            {activeCategory.projects.length ? <div className={`project-view-grid${activeCategory.single ? " project-view-single" : ""}`}>{activeCategory.projects.map((project) => <article key={project.id} className="project-view-item"><div><small>{project.type}</small><h3>{project.title}</h3><p>{project.description}</p>{project.videoUrl ? <ProjectVideo project={project} autoPlay={Boolean(activeCategory.single)}/> : <span className="project-view-empty">暂未上传视频</span>}</div></article>)}</div> : <p className="project-view-empty">这里还没有项目，请通过右下角内容管理添加。</p>}
+            {activeCategory.single ? activeCategory.projects.map((project) => <div className="focused-player" key={project.id}>{project.videoUrl ? <ProjectVideo project={project} autoPlay/> : <p className="project-view-empty">暂未上传视频</p>}{project.description && <p>{project.description}</p>}</div>) : activeCategory.projects.length ? <div className="project-browser-grid">{activeCategory.projects.map((project) => <button className="project-browser-card" key={project.id} type="button" onClick={() => setActiveCategory({ title: project.title, label: activeCategory.title, projects: [project], single: true, parent: activeCategory })}><span className="project-browser-media"><img src={project.coverUrl} alt={`${project.title}封面`} loading="lazy"/><Play size={30} weight="fill"/></span><span className="project-browser-caption"><strong>{project.title}</strong><small>{project.type}</small></span></button>)}</div> : <p className="project-view-empty">作品即将上线</p>}
+            {activeCategory.parent && <button className="project-back" type="button" onClick={() => setActiveCategory(activeCategory.parent)}>← 返回全部作品</button>}
           </section>
         </div>
       )}

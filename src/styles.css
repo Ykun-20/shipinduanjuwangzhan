@@ -746,3 +746,24 @@ img, video { display: block; width: 100%; }
 .gallery-groups .gallery-item-shade { display: none; }
 .gallery-groups .gallery-item-copy { position: static; display: block; padding: 18px 20px; }
 @media(max-width: 700px) { .gallery-groups .gallery-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* Local review: compact image previews and a dedicated cinema player. */
+.gallery-groups .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 260px)); gap: 20px; }
+.gallery-groups .gallery-item img { width: 100%; height: 320px; object-fit: contain; background: #090909; }
+.gallery-groups .gallery-item-copy { padding: 12px 14px; }
+.gallery-groups .gallery-item-copy strong { font-size: 16px; }
+.project-browser-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
+.project-browser-card { padding: 0; border: 1px solid #303030; color: #eee; background: #111; text-align: left; cursor: pointer; }
+.project-browser-card:hover { border-color: var(--accent); }
+.project-browser-media { position: relative; display: grid; place-items: center; height: 220px; background: #050505; }
+.project-browser-media img { width: 100%; height: 100%; object-fit: contain; }
+.project-browser-media svg { position: absolute; padding: 12px; box-sizing: content-box; background: #0009; border-radius: 50%; }
+.project-browser-caption { display: grid; gap: 8px; padding: 14px; }
+.project-browser-caption small { color: #aaa; }
+.focused-player-panel { width: min(1040px, 94vw); padding: 18px; }
+.focused-player-panel h2 { font-size: clamp(18px, 2vw, 28px); }
+.focused-player-panel header { margin-bottom: 12px; padding-bottom: 12px; }
+.focused-player video { display: block; width: 100%; max-height: 72vh; object-fit: contain; background: #000; }
+.focused-player p { color: #aaa; font-size: 13px; }
+.project-back { margin-top: 14px; padding: 8px 12px; border: 1px solid #444; color: #ddd; background: transparent; cursor: pointer; }
+@media(max-width: 700px) { .gallery-groups .gallery-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; } .gallery-groups .gallery-item img { height: 240px; } .project-browser-grid { grid-template-columns: minmax(0,1fr); } .project-view { padding: 12px; } .project-view-panel { padding: 16px; } }
