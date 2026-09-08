@@ -795,3 +795,11 @@ section[id] { scroll-margin-top: 108px; }
 .about .about-image { min-height: 0; height: auto; align-self: center; }
 .about .about-image img { display: block; width: 100%; height: auto; object-fit: contain; object-position: center; }
 @media(max-width: 1100px) { .about { grid-template-columns: minmax(0, 1fr); } .about .about-image { width: min(600px, 100%); margin-inline: auto; } }
+
+/* Keep the cinematic sections bounded, including when the browser is zoomed out. */
+.hero, .contact { width: min(1700px, 100%); margin-inline: auto; min-height: 0; background: #080808; }
+.hero .hero-content { min-height: clamp(560px, 56.25vw, 956px); padding-bottom: 40px; }
+.hero .hero-video { object-fit: contain; object-position: center; }
+.contact { min-height: clamp(560px, 56.25vw, 956px); padding-block: 100px 130px; }
+.contact > img { object-fit: contain; object-position: center; }
+@media(max-width: 700px) { .hero .hero-content { min-height: 600px; padding-top: 100px; } .contact { min-height: 600px; padding-block: 90px 130px; } }
