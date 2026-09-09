@@ -12,5 +12,5 @@ export default function ProjectVideo({ project, autoPlay }) {
     });
     return () => { cancelled = true; video.pause(); };
   }, [project.videoUrl, autoPlay]);
-  return <video ref={ref} controls autoPlay={autoPlay} preload="metadata" playsInline src={project.videoUrl} aria-label={`播放${project.title}`}/>;
+  return <video ref={ref} controls controlsList="nodownload noremoteplayback" disablePictureInPicture disableRemotePlayback onContextMenu={(event) => event.preventDefault()} autoPlay={autoPlay} preload="metadata" playsInline src={project.videoUrl} aria-label={`播放${project.title}`}/>;
 }

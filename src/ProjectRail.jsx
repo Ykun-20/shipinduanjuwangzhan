@@ -42,7 +42,7 @@ function ProjectCover({ project, onOpen }) {
     onMouseEnter={() => { if (project.videoUrl) setPreview(true); }} onMouseLeave={stop}
     onBlur={stop} onClick={() => { stop(); onOpen(); }}>
     <img src={project.coverUrl} alt={`${project.title}封面`} loading="lazy" draggable={false}/>
-    {preview && <video className={`project-hover-video${playing ? " is-playing" : ""}`} src={project.videoUrl} autoPlay muted loop playsInline preload="none" onPlaying={() => setPlaying(true)} onError={stop} aria-hidden="true"/>}
+    {preview && <video controlsList="nodownload noremoteplayback" disablePictureInPicture disableRemotePlayback onContextMenu={(event) => event.preventDefault()} className={`project-hover-video${playing ? " is-playing" : ""}`} src={project.videoUrl} autoPlay muted loop playsInline preload="none" onPlaying={() => setPlaying(true)} onError={stop} aria-hidden="true"/>}
     <span className="project-cover-shade"/><span className="project-cover-copy"><small>{project.type}</small><strong>{project.title}</strong></span>
     {project.videoUrl && !playing && <Play className="project-cover-play" size={30} weight="fill"/>}
   </button>;
