@@ -12,7 +12,7 @@ import {
 import BlurText from "./components/BlurText";
 import ParticleText from "./components/ParticleText";
 import { cosAsset, loadManifest, localAsset, useLocalAssetFallback } from "./cosAssets";
-const AdminPanel = import.meta.env.DEV ? lazy(() => import("./AdminPanel")) : null;
+const AdminPanel = lazy(() => import("./AdminGate"));
 import ProjectRail from "./ProjectRail";
 import ProjectVideo from "./ProjectVideo";
 import { getCategories } from "./categories";
@@ -347,7 +347,7 @@ export function App() {
       )}
       {wechatOpen && <div className="wechat-dialog" role="dialog" aria-modal="true" aria-labelledby="wechat-title"><button className="wechat-backdrop" type="button" aria-label="关闭微信二维码" onClick={() => setWechatOpen(false)}/><section className="wechat-panel"><header><h2 id="wechat-title">微信联系我</h2><button autoFocus type="button" aria-label="关闭" onClick={() => setWechatOpen(false)}><X size={22}/></button></header><img src={localAsset("wechat-contact.jpg")} alt="我的微信二维码，使用微信扫一扫添加好友"/><p>微信扫一扫，或长按保存图片后在微信中识别</p></section></div>}
       {contactOpen && <div className="wechat-dialog" role="dialog" aria-modal="true" aria-labelledby="contact-dialog-title"><button className="wechat-backdrop" type="button" aria-label="关闭联系方式" onClick={() => setContactOpen(false)}/><section className="wechat-panel contact-info-panel"><header><h2 id="contact-dialog-title">联系我</h2><button autoFocus type="button" aria-label="关闭" onClick={() => setContactOpen(false)}><X size={22}/></button></header><div className="contact-info-row"><small>手机号</small><a href={`tel:${(content.profile?.phone || "166 2511 6217").replace(/\s+/g, "")}`}>{content.profile?.phone || "166 2511 6217"}</a></div><div className="contact-info-row"><small>邮箱</small><a href={`mailto:${content.profile?.email || "13673958331@163.com"}`}>{content.profile?.email || "13673958331@163.com"}</a></div></section></div>}
-      {import.meta.env.DEV && <Suspense fallback={null}><AdminPanel content={content} onContentChange={setContent} /></Suspense>}
+      <Suspense fallback={null}><AdminPanel content={content} onContentChange={setContent} /></Suspense>
     </main>
   );
 }
